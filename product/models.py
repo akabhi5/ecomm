@@ -12,7 +12,11 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=11, decimal_places=2)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, blank=True, null=True
+        Category,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="category_products",
     )
 
     def __str__(self) -> str:
