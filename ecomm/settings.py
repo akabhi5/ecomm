@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -27,10 +28,7 @@ BUILT_IN_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = [
-    "rest_framework",
-    "drf_yasg",
-]
+THIRD_PARTY_APPS = ["rest_framework", "drf_yasg", "rest_framework_simplejwt"]
 
 LOCAL_APPS = ["product", "users"]
 
@@ -122,3 +120,23 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=45),
+}
+
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Basic": {"type": "basic"},
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
+    }
+}
