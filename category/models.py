@@ -4,7 +4,13 @@ from django.db import models
 class Category(models.Model):
     name = models.CharField(max_length=12)
     slug = models.CharField(max_length=16)
-    parent = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="subcategories",
+    )
 
     def __str__(self) -> str:
         return self.name

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from category.serializers import CategorySerializer
 from product.models import Product, ProductImage
 
 
@@ -10,6 +11,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     product_images = ProductImageSerializer(required=True, many=True)
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         model = Product
@@ -21,6 +23,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "created_on",
             "updated_on",
             "product_images",
+            "category",
         ]
 
     def create(self, validated_data):

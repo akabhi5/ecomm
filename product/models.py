@@ -1,4 +1,5 @@
 from django.db import models
+from category.models import Category
 from users.models import Seller
 
 
@@ -10,6 +11,9 @@ class Product(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     price = models.DecimalField(max_digits=11, decimal_places=2)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, blank=True, null=True
+    )
 
     def __str__(self) -> str:
         return self.name
