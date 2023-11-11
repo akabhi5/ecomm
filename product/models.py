@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import Seller
 
 
 class Product(models.Model):
@@ -7,6 +8,8 @@ class Product(models.Model):
     description = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+    price = models.DecimalField(max_digits=11, decimal_places=2)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.name

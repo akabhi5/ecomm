@@ -32,9 +32,7 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
 ]
 
-LOCAL_APPS = [
-    "product",
-]
+LOCAL_APPS = ["product", "users"]
 
 INSTALLED_APPS = BUILT_IN_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -49,6 +47,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "ecomm.urls"
+
+AUTH_USER_MODEL = "users.User"
 
 TEMPLATES = [
     {
