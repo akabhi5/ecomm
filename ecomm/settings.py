@@ -30,7 +30,7 @@ BUILT_IN_APPS = [
 
 THIRD_PARTY_APPS = ["rest_framework", "drf_yasg", "rest_framework_simplejwt"]
 
-LOCAL_APPS = ["product", "users"]
+LOCAL_APPS = ["product", "users", "review"]
 
 INSTALLED_APPS = BUILT_IN_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

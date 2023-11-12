@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from users.models import Customer
 
 User = get_user_model()
 
@@ -24,4 +25,23 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         user.set_password(password)
         user.save()
+        return user
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["name", "email", "password", "role"]
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Customer
+        fields = ["user"]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        user = data.get("user")
         return user
