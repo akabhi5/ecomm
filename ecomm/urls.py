@@ -34,5 +34,4 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("products/", include("product.urls")),
     path("user/", include("users.urls")),
-    path("category/", include("category.urls")),
 ] + swagger_urls

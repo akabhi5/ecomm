@@ -1,5 +1,5 @@
 from django.contrib import admin
-from product.models import Product, ProductImage
+from product.models import Product, ProductImage, Category
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -14,5 +14,11 @@ class ProductImageAdmin(admin.ModelAdmin):
     list_display_links = ["id", "url"]
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "slug", "parent"]
+    list_display_links = ["id", "name", "slug"]
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
+admin.site.register(Category, CategoryAdmin)

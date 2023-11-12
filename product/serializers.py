@@ -1,5 +1,16 @@
 from rest_framework import serializers
-from product.models import Product, ProductImage
+from product.models import Product, ProductImage, Category
+from users.models import Seller
+
+
+class CategoryProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+            "slug",
+        ]
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -10,7 +21,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     product_images = ProductImageSerializer(required=True, many=True)
-    category = serializers.StringRelatedField()
 
     class Meta:
         model = Product
@@ -18,6 +28,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "slug",
+            "price",
             "description",
             "created_on",
             "updated_on",
@@ -27,12 +38,33 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         product_images = validated_data.pop("product_images")
-        product = Product.objects.create(**validated_data)
+        user = self.context["user"]
+        seller = Seller.objects.get(user=user)
+        product = Product.objects.create(seller=seller, **validated_data)
         urls = [image.get("url") for image in product_images]
         ProductImage.objects.bulk_create(
             [ProductImage(url=url, product=product) for url in urls]
         )
         return product
+
+
+class ProductSerializerRead(ProductSerializer):
+    category = CategoryProductSerializer()
+    product_images = ProductImageSerializer(required=True, many=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "price",
+            "description",
+            "created_on",
+            "updated_on",
+            "product_images",
+            "category",
+        ]
 
 
 class ProductSerializerNoCategory(serializers.ModelSerializer):
@@ -49,3 +81,11 @@ class ProductSerializerNoCategory(serializers.ModelSerializer):
             "updated_on",
             "product_images",
         ]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    category_products = ProductSerializerNoCategory(many=True)
+
+    class Meta:
+        model = Category
+        fields = ["id", "name", "slug", "category_products"]

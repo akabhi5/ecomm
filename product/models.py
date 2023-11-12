@@ -1,5 +1,4 @@
 from django.db import models
-from category.models import Category
 from users.models import Seller
 
 
@@ -12,7 +11,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=11, decimal_places=2)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.ForeignKey(
-        Category,
+        to="Category",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
@@ -34,3 +33,21 @@ class ProductImage(models.Model):
 
     def __str__(self) -> str:
         return self.url
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=12)
+    slug = models.CharField(max_length=16)
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="subcategories",
+    )
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "categories"
