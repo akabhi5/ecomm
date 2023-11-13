@@ -3,6 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from users.models import Customer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
@@ -45,3 +46,8 @@ class CustomerSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         user = data.get("user")
         return user
+
+
+class CustomUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
