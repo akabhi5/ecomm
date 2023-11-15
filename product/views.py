@@ -39,13 +39,11 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
         return ProductSerializer
 
 
-class CategoryProductView(generics.ListAPIView):
+class CategoryProductView(generics.RetrieveAPIView):
+    queryset = Category.objects.all()
     serializer_class = ProductCategorySerializer
-    lookup_field = "category_slug"
-
-    def get_queryset(self):
-        slug = self.kwargs.get("category_slug")
-        return Category.objects.filter(slug=slug)
+    lookup_field = "slug"
+    lookup_url_kwarg = "category_slug"
 
 
 class CategoryView(generics.ListAPIView):
