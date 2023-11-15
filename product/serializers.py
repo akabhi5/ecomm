@@ -83,9 +83,15 @@ class ProductSerializerNoCategory(serializers.ModelSerializer):
         ]
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class ProductCategorySerializer(serializers.ModelSerializer):
     category_products = ProductSerializerNoCategory(many=True)
 
     class Meta:
         model = Category
         fields = ["id", "name", "slug", "category_products"]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name", "slug"]

@@ -3,10 +3,12 @@ from rest_framework import generics, permissions
 from product.models import Product, Category
 from product.serializers import (
     ProductSerializer,
-    CategorySerializer,
+    ProductCategorySerializer,
     ProductSerializerRead,
+    CategorySerializer,
 )
 from users.permissions import IsSeller, ReadOnly
+from django.db.models import Q
 
 
 class ProductList(generics.ListCreateAPIView):
@@ -37,10 +39,19 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
         return ProductSerializer
 
 
-class CategoryView(generics.ListAPIView):
-    serializer_class = CategorySerializer
+class CategoryProductView(generics.ListAPIView):
+    serializer_class = ProductCategorySerializer
     lookup_field = "category_slug"
 
     def get_queryset(self):
         slug = self.kwargs.get("category_slug")
         return Category.objects.filter(slug=slug)
+
+
+class CategoryView(generics.ListAPIView):
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        if self.request.GET.get("category_type") == "parent":
+            return Category.objects.filter(parent=None)
+        return Category.objects.filter(~Q(parent=None))
