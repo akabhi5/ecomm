@@ -9,10 +9,11 @@ from django.utils.translation import gettext_lazy as _
 class ReviewSerializer(serializers.ModelSerializer):
     customer = serializers.CharField(read_only=True)
     product = serializers.CharField(read_only=True)
+    customerId = serializers.SerializerMethodField("get_customerId")
 
     class Meta:
         model = Review
-        fields = ["id", "customer", "product", "comment"]
+        fields = ["id", "customer", "product", "comment", "customerId"]
 
     def create(self, validated_data):
         product_slug = self.context["product_slug"]
@@ -36,3 +37,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         instance.comment = comment
         instance.save()
         return instance
+
+    def get_customerId(self, obj):
+        return obj.customer.user.id
