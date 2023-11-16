@@ -7,3 +7,9 @@ class Review(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     comment = models.TextField()
+
+    class Meta:
+        unique_together = (
+            "customer",
+            "product",
+        )

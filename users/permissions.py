@@ -11,6 +11,15 @@ class IsSeller(BasePermission):
         return False
 
 
+class IsCustomer(BasePermission):
+    message = "Access Denied!"
+
+    def has_permission(self, request, view):
+        if not request.user.is_anonymous and request.user.role == User.Role.CUSTOMER:
+            return True
+        return False
+
+
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
