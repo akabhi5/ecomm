@@ -3,5 +3,5 @@ from review import views
 
 
 urlpatterns = [
-    path("product/<slug:product_slug>/", views.ReviewView.as_view(), name="reviews")
+    path("product/<slug:product_slug>/", views.ReviewAPIView.as_view(), name="review")
 ]

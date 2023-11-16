@@ -13,3 +13,6 @@ class Review(models.Model):
             "customer",
             "product",
         )
+
+    def __str__(self) -> str:
+        return f"{self.customer} - {self.product}"
