@@ -31,6 +31,7 @@ def customer_login(request):
         ):
             refresh = RefreshToken.for_user(user)
             data = {
+                "id": user.id,
                 "token": str(refresh.access_token),
                 "email": user.email,
                 "name": user.name,
