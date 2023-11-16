@@ -76,6 +76,7 @@ class ProductSerializerNoCategory(serializers.ModelSerializer):
             "id",
             "name",
             "slug",
+            "price",
             "description",
             "created_on",
             "updated_on",
