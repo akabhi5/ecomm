@@ -10,7 +10,13 @@ User = get_user_model()
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
-        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
+        required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message="The email address is already registered.",
+            )
+        ],
     )
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
@@ -20,6 +26,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ["name", "email", "password", "role"]
         extra_kwargs = {"name": {"required": True}, "role": {"required": False}}
+        # error_messages = {
+        #     "email": {"unique": "The email address is already registered."},
+        # }
 
     def create(self, validated_data):
         password = validated_data.pop("password")
