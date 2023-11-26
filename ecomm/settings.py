@@ -35,7 +35,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
 ]
 
-LOCAL_APPS = ["product", "users", "review"]
+LOCAL_APPS = ["product", "users", "review", "cart"]
 
 INSTALLED_APPS = BUILT_IN_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
