@@ -92,7 +92,24 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "slug", "category_products"]
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name", "slug"]
+        fields = (
+            "id",
+            "name",
+            "slug",
+            "image",
+        )  # Fields to include for subcategories
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    subcategories = SubcategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = (
+            "id",
+            "name",
+            "subcategories",
+        )  # Fields to include for categories

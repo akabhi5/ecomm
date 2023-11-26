@@ -47,9 +47,7 @@ class CategoryProductView(generics.RetrieveAPIView):
 
 
 class CategoryView(generics.ListAPIView):
+    queryset = Category.objects.filter(parent__isnull=True).prefetch_related(
+        "subcategories"
+    )
     serializer_class = CategorySerializer
-
-    def get_queryset(self):
-        if self.request.GET.get("category_type") == "parent":
-            return Category.objects.filter(parent=None)
-        return Category.objects.filter(~Q(parent=None))

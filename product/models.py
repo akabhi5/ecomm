@@ -38,6 +38,7 @@ class ProductImage(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=12)
     slug = models.CharField(max_length=16)
+    image = models.URLField(max_length=160, blank=True, null=True)
     parent = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
