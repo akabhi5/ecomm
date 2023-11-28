@@ -13,42 +13,41 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = ["id", "quantity", "product"]
 
 
-class CartSerializer(serializers.ModelSerializer):
-    cart_items = CartItemSerializer(many=True)
+class CartItemWriteSerializer(serializers.ModelSerializer):
+    product_slug = serializers.CharField(write_only=True)
+    product = CategoryProductSerializer(read_only=True)
 
     class Meta:
-        model = Cart
-        fields = ["id", "customer", "cart_items"]
+        model = CartItem
+        fields = ["id", "quantity", "product_slug", "product"]
 
-
-class AddProductToCartSerializer(serializers.Serializer):
-    product = serializers.SlugField()
-
-    def validate_product_slug(self, value):
-        product = Product.objects.filter(slug=value)
-        if not product.exists():
-            raise serializers.ValidationError("Invalid product")
-        return value
-
-    def create(self, validated_data):
-        product_slug = validated_data["product"]
-        product = Product.objects.get(slug=product_slug)
+    def create(self, validated_data: dict):
         user = self.context["user"]
+        if not Cart.objects.filter(customer__user=user).exists():
+            Cart.objects.create(customer=user.customer)
         customer = Customer.objects.get(user=user)
-        cart_item_exists = CartItem.objects.filter(
-            cart__customer=customer, product=product
-        ).exists()
-        if cart_item_exists:
-            raise serializers.ValidationError("Product already added to cart")
-        cart_item = CartItem.objects.create(
-            cart=customer.customer_cart, product=product, quantity=1
+        product_slug = validated_data.pop("product_slug")
+        product = Product.objects.get(slug=product_slug)
+        print(validated_data)
+        return CartItem.objects.create(
+            cart=customer.customer_cart, product=product, **validated_data
         )
-        return cart_item
 
 
-class ChangeProductQuantityToCartSerializer(serializers.Serializer):
-    quantity = serializers.IntegerField()
+class ChangeProductQuantityCartSerializer(serializers.ModelSerializer):
+    product = CategoryProductSerializer(read_only=True)
+
+    class Meta:
+        model = CartItem
+        fields = ["id", "quantity", "product"]
 
     def validate_quantity(self, value):
         if value <= 0:
             raise serializers.ValidationError("Quantity must be greater than 0")
+        return value
+
+    def update(self, instance: CartItem, validated_data):
+        quantity = validated_data.get("quantity")
+        instance.quantity = quantity
+        instance.save()
+        return instance

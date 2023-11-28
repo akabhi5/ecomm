@@ -1,58 +1,44 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from cart.models import Cart, CartItem
-from cart.serializers import AddProductToCartSerializer, CartSerializer
-from users.models import Customer
+from rest_framework import generics
 
+from cart.models import CartItem
+from cart.serializers import (
+    CartItemSerializer,
+    CartItemWriteSerializer,
+    ChangeProductQuantityCartSerializer,
+)
 from users.permissions import IsCustomer
 
 
-def get_customer_cart(customer):
-    cart = Cart.objects.get(customer=customer)
-    serializer = CartSerializer(cart)
-    return serializer.data
-
-
-class CartView(APIView):
+class CartItemsView(generics.ListCreateAPIView):
     permission_classes = [IsCustomer]
 
-    def get(self, request, format=None):
-        user = request.user
-        customer = Customer.objects.get(user=user)
-        cart, _ = Cart.objects.get_or_create(customer=customer)
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
+    def get_queryset(self):
+        user = self.request.user
+        return CartItem.objects.filter(cart__customer__user=user)
 
-    def post(self, request, format=None):
-        customer = Customer.objects.get(user=request.user)
-        serializer = AddProductToCartSerializer(
-            data=request.data, context={"user": request.user}
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return CartItemSerializer
+        else:
+            return CartItemWriteSerializer
+
+    def get_serializer_context(self):
+        return {"user": self.request.user}
+
+
+class CartItemsUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    http_method_names = ["patch", "delete"]
+    permission_classes = [IsCustomer]
+    lookup_field = "product__slug"  # this will be used for query
+    lookup_url_kwarg = "product_slug"  # this will be used in url
+    # if both are same then just use : 'lookup_field'
+
+    def get_queryset(self):
+        user = self.request.user
+        product_slug = self.kwargs["product_slug"]
+        return CartItem.objects.filter(
+            cart__customer__user=user, product__slug=product_slug
         )
-        if serializer.is_valid():
-            serializer.save()
-            cart = get_customer_cart(customer)
-            return Response(cart, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class CartDetailView(APIView):
-    def delete(self, request, product, format=None):
-        customer = Customer.objects.get(user=request.user)
-        cart_item = CartItem.objects.filter(
-            cart__customer=customer, product__slug=product
-        )
-        if cart_item.exists():
-            cart_item.delete()
-        cart = get_customer_cart(customer)
-        return Response(cart, status=status.HTTP_204_NO_CONTENT)
-
-    def patch(self, request, product, format=None):
-        customer = Customer.objects.get(user=request.user)
-        cart_item = CartItem.objects.filter(
-            cart__customer=customer, product__slug=product
-        )
-        if cart_item.exists():
-            cart_item.delete()
-        cart = get_customer_cart(customer)
-        return Response(cart, status=status.HTTP_204_NO_CONTENT)
+    def get_serializer_class(self):
+        return ChangeProductQuantityCartSerializer
