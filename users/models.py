@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from cart.models import Cart
 
 from .managers import UserManager
 
@@ -48,6 +49,7 @@ class Customer(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.role == User.Role.CUSTOMER:
-            Customer.objects.create(user=instance)
+            customer = Customer.objects.create(user=instance)
+            Cart.objects.create(customer=customer)
         elif instance.role == User.Role.SELLER:
             Seller.objects.create(user=instance)

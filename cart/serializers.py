@@ -21,14 +21,23 @@ class CartItemWriteSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = ["id", "quantity", "product_slug", "product"]
 
+    def validate_product_slug(self, value):
+        user = self.context["user"]
+        customer = Customer.objects.get(user=user)
+        if CartItem.objects.filter(
+            product__slug=value, cart__customer__user=customer
+        ).exists():
+            raise serializers.ValidationError("Product already in cart.")
+        return value
+
     def create(self, validated_data: dict):
         user = self.context["user"]
-        if not Cart.objects.filter(customer__user=user).exists():
-            Cart.objects.create(customer=user.customer)
         customer = Customer.objects.get(user=user)
         product_slug = validated_data.pop("product_slug")
-        product = Product.objects.get(slug=product_slug)
-        print(validated_data)
+        product = Product.objects.filter(slug=product_slug)
+        if not product.exists():
+            raise serializers.ValidationError("Product does not exist.")
+        product = product.first()
         return CartItem.objects.create(
             cart=customer.customer_cart, product=product, **validated_data
         )

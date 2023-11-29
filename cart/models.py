@@ -1,13 +1,10 @@
-from django.db import models
-from product.models import Product
-
-from users.models import Customer
 from django.core.validators import MinValueValidator
+from django.db import models
 
 
 class Cart(models.Model):
     customer = models.OneToOneField(
-        Customer, on_delete=models.CASCADE, related_name="customer_cart"
+        "users.Customer", on_delete=models.CASCADE, related_name="customer_cart"
     )
 
     def __str__(self):
@@ -16,7 +13,7 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey("product.Product", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(
         validators=[MinValueValidator(1, message="Quantity cannot be less than 1.")]
     )
