@@ -3,6 +3,12 @@ from product.models import Product, ProductImage, Category
 from users.models import Seller
 
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["id", "url"]
+
+
 class CategoryProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -13,10 +19,12 @@ class CategoryProductSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProductImageSerializer(serializers.ModelSerializer):
+class ProductCartSerializer(serializers.ModelSerializer):
+    product_images = ProductImageSerializer(read_only=True, many=True)
+
     class Meta:
-        model = ProductImage
-        fields = ["id", "url"]
+        model = Category
+        fields = ["id", "name", "slug", "product_images"]
 
 
 class ProductSerializer(serializers.ModelSerializer):
