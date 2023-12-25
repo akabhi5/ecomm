@@ -1,15 +1,17 @@
 from django.db import models
-from users.models import Seller
 
 
 class Product(models.Model):
     name = models.CharField(max_length=64)
     slug = models.CharField(max_length=128, unique=True)
+    brand = models.ForeignKey(
+        "brand.Brand", on_delete=models.CASCADE, related_name="brand_products"
+    )
     description = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     price = models.DecimalField(max_digits=11, decimal_places=2)
-    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    seller = models.ForeignKey("users.Seller", on_delete=models.CASCADE)
     category = models.ForeignKey(
         to="Category",
         on_delete=models.SET_NULL,
