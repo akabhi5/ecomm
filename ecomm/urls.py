@@ -36,5 +36,5 @@ urlpatterns = [
     path("user/", include("users.urls")),
     path("review/", include("review.urls")),
     path("cart/", include("cart.urls")),
-    path("brand/", include("brand.urls")),
+    path("brands/", include("brand.urls")),
 ] + swagger_urls

@@ -10,7 +10,7 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ["name", "image", "description", "slug", "seller"]
+        fields = ["id", "name", "image", "description", "slug", "seller"]
 
     def create(self, validated_data: dict):
         user = self.context["user"]
@@ -24,4 +24,12 @@ class BrandProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ["name", "image", "description", "slug", "seller", "brand_products"]
+        fields = [
+            "id",
+            "name",
+            "image",
+            "description",
+            "slug",
+            "seller",
+            "brand_products",
+        ]
