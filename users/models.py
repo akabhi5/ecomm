@@ -31,7 +31,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Seller(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True, related_name="seller"
+    )
     pickup_address = models.CharField(max_length=160)
 
     def __str__(self) -> str:
@@ -39,7 +41,9 @@ class Seller(models.Model):
 
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True, related_name="customer"
+    )
 
     def __str__(self) -> str:
         return self.user.name

@@ -6,13 +6,17 @@ from rest_framework.permissions import AllowAny
 
 
 class BrandListView(ListCreateAPIView):
-    queryset = Brand.objects.all()
     serializer_class = BrandSerializer
 
     def get_permissions(self):
         if self.request.method == "POST":
             return [IsSeller()]
         return [AllowAny()]
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated and self.request.user.role == "SE":
+            return Brand.objects.filter(seller=self.request.user.seller)
+        return Brand.objects.all()
 
     def get_serializer_context(self):
         return {"user": self.request.user}

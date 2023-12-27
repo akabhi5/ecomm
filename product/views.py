@@ -14,6 +14,11 @@ from django.db.models import Q
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
 
+    def get_queryset(self):
+        if self.request.user.is_authenticated and self.request.user.role == "SE":
+            return Product.objects.filter(seller=self.request.user.seller)
+        return Product.objects.all()
+
     def get_permissions(self):
         if self.request.method == "POST":
             return [IsSeller()]
