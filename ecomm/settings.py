@@ -151,7 +151,4 @@ SWAGGER_SETTINGS = {
 }
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-]
+CORS_ALLOWED_ORIGINS = eval(os.environ.get("ALLOWED_ORIGINS"))
