@@ -42,6 +42,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "updated_on",
             "product_images",
             "category",
+            "brand",
         ]
 
     def create(self, validated_data):
