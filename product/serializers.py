@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from product.models import Product, ProductImage, Category
+from brand.models import Brand
 from users.models import Seller
+
+
+class ProductBrand(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ["id", "name"]
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -29,6 +36,7 @@ class ProductCartSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     product_images = ProductImageSerializer(required=True, many=True)
+    brand = ProductBrand(read_only=True)
 
     class Meta:
         model = Product
@@ -73,6 +81,7 @@ class ProductSerializerRead(ProductSerializer):
             "updated_on",
             "product_images",
             "category",
+            "brand",
         ]
 
 
