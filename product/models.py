@@ -54,3 +54,20 @@ class Category(models.Model):
 
     class Meta:
         verbose_name_plural = "categories"
+
+
+class ProductSizeQuantity(models.Model):
+    product = models.OneToOneField(
+        "product.Product", on_delete=models.CASCADE, related_name="size_quantity"
+    )
+    xs = models.PositiveIntegerField(verbose_name="XS")
+    s = models.PositiveIntegerField(verbose_name="S")
+    m = models.PositiveIntegerField(verbose_name="M")
+    l = models.PositiveIntegerField(verbose_name="L")
+    xl = models.PositiveIntegerField(verbose_name="XL")
+
+    def __str__(self) -> str:
+        return self.product.name
+
+    class Meta:
+        verbose_name_plural = "Product size and quantities"

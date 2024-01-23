@@ -16,8 +16,10 @@ class ProductList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated and self.request.user.role == "SE":
-            return Product.objects.filter(seller=self.request.user.seller)
-        return Product.objects.all()
+            return Product.objects.filter(
+                seller=self.request.user.seller
+            ).prefetch_related("size_quantity")
+        return Product.objects.all().prefetch_related("size_quantity")
 
     def get_permissions(self):
         if self.request.method == "POST":
