@@ -64,6 +64,34 @@ class ProductSerializer(serializers.ModelSerializer):
         )
         return product
 
+    def update(self, instance, validated_data):
+        # delete all image for this product
+        images_to_delete = ProductImage.objects.filter(product=instance)
+        for img in images_to_delete:
+            img.delete()
+
+        # add new product
+        product_images = validated_data.pop("product_images")
+        urls = [image.get("url") for image in product_images]
+        ProductImage.objects.bulk_create(
+            [ProductImage(url=url, product=instance) for url in urls]
+        )
+
+        instance.name = validated_data.get("name", instance.name)
+        instance.slug = validated_data.get("slug", instance.slug)
+
+        validated_data_brand = validated_data.get("slug", instance.slug)
+        instance.brand = Brand.objects.get(id=validated_data_brand)
+
+        validated_data_category = validated_data.get("category", instance.category)
+        instance.category = Category.objects.get(id=validated_data_category)
+
+        instance.description = validated_data.get("description", instance.description)
+        instance.price = validated_data.get("price", instance.price)
+
+        instance.save()
+        return instance
+
 
 class ProductSerializerRead(ProductSerializer):
     category = CategoryProductSerializer()
