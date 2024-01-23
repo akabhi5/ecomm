@@ -36,7 +36,6 @@ class ProductCartSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     product_images = ProductImageSerializer(required=True, many=True)
-    brand = ProductBrand(read_only=True)
 
     class Meta:
         model = Product
@@ -96,6 +95,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductSerializerRead(ProductSerializer):
     category = CategoryProductSerializer()
     product_images = ProductImageSerializer(required=True, many=True)
+    brand = ProductBrand(read_only=True)
 
     class Meta:
         model = Product
