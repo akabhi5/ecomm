@@ -78,13 +78,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
         instance.name = validated_data.get("name", instance.name)
         instance.slug = validated_data.get("slug", instance.slug)
-
-        validated_data_brand = validated_data.get("slug", instance.slug)
-        instance.brand = Brand.objects.get(id=validated_data_brand)
-
-        validated_data_category = validated_data.get("category", instance.category)
-        instance.category = Category.objects.get(id=validated_data_category)
-
+        instance.brand = validated_data.get("brand", instance.brand)
+        instance.category = validated_data.get("category", instance.category)
         instance.description = validated_data.get("description", instance.description)
         instance.price = validated_data.get("price", instance.price)
 
