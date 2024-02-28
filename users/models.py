@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from cart.models import Cart
+from wishlist.models import Wishlist
 
 from .managers import UserManager
 
@@ -55,5 +56,6 @@ def create_user_profile(sender, instance, created, **kwargs):
         if instance.role == User.Role.CUSTOMER:
             customer = Customer.objects.create(user=instance)
             Cart.objects.create(customer=customer)
+            Wishlist.objects.create(customer=customer)
         elif instance.role == User.Role.SELLER:
             Seller.objects.create(user=instance)
