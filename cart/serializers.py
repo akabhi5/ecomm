@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from cart.models import Cart, CartItem
 from product.models import Product
-from product.serializers import CategoryProductSerializer, ProductCartSerializer
+from product.serializers import ProductCartSerializer
 from users.models import Customer
 
 
@@ -15,7 +15,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 class CartItemWriteSerializer(serializers.ModelSerializer):
     product_slug = serializers.CharField(write_only=True)
-    product = CategoryProductSerializer(read_only=True)
+    product = ProductCartSerializer(read_only=True)
 
     class Meta:
         model = CartItem
@@ -44,7 +44,7 @@ class CartItemWriteSerializer(serializers.ModelSerializer):
 
 
 class ChangeProductQuantityCartSerializer(serializers.ModelSerializer):
-    product = CategoryProductSerializer(read_only=True)
+    product = ProductCartSerializer(read_only=True)
 
     class Meta:
         model = CartItem
