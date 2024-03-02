@@ -36,8 +36,9 @@ class CartItemsUpdateView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         product_slug = self.kwargs["product_slug"]
+        size = self.kwargs["size"]
         return CartItem.objects.filter(
-            cart__customer__user=user, product__slug=product_slug
+            cart__customer__user=user, product__slug=product_slug, size=size
         )
 
     def get_serializer_class(self):

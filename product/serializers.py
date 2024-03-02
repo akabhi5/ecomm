@@ -7,7 +7,7 @@ from users.models import Seller
 class ProductSizeQuantitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductSizeQuantity
-        fields = ["id", "xs", "s", "m", "l", "xl"]
+        fields = ["xs", "s", "m", "l", "xl"]
 
 
 class ProductBrand(serializers.ModelSerializer):
