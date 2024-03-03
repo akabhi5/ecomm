@@ -1,4 +1,6 @@
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from cart.models import CartItem
 from cart.serializers import (
@@ -43,3 +45,28 @@ class CartItemsUpdateView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_serializer_class(self):
         return ChangeProductQuantityCartSerializer
+
+
+class CartTotalAmount(APIView):
+    permission_classes = [IsCustomer]
+
+    def get(self, request, format=None):
+        cart = CartItem.objects.filter(cart__customer__user=request.user)
+        cart_data = {}
+        total_price = 0
+        product_info = []
+        for cart_item in cart:
+            item_price = float(cart_item.product.price * cart_item.quantity)
+            total_price += item_price
+
+            info = {
+                "product_id": cart_item.product.id,
+                "size": cart_item.size,
+                "price": item_price,
+            }
+            product_info.append(info)
+
+        cart_data["product_info"] = product_info
+        cart_data["total_price"] = total_price
+        cart_data["discount"] = 0
+        return Response(cart_data)

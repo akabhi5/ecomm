@@ -12,4 +12,5 @@ urlpatterns = [
         name="cart-items-detail",
     ),
     path("cart-items/", views.CartItemsView.as_view(), name="cart-items"),
+    path("cart-total/", views.CartTotalAmount.as_view(), name="cart-total"),
 ]
